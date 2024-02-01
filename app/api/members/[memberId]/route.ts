@@ -11,8 +11,6 @@ export async function PATCH(
     const { searchParams } = new URL(req.url);
     const { role } = await req.json();
 
-    console.log("URL::::", req.url);
-
     const serverId = searchParams.get("serverId");
 
     if (!profile) {
