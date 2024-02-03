@@ -66,7 +66,7 @@ export const EditChannelModal = () => {
       form.setValue("name", channel.name);
       form.setValue("type", channel.type);
     }
-  }, [form, channel]);
+  }, [form, channel, isModalOpen]);
 
   const isLoading = form.formState.isSubmitting;
 
@@ -78,7 +78,7 @@ export const EditChannelModal = () => {
           serverId: server?.id,
         },
       });
-      await axios.post(url, values);
+      await axios.patch(url, values);
 
       form.reset();
       onClose();
