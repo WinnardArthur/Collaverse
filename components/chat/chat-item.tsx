@@ -96,10 +96,13 @@ const ChatItem = ({
     try {
       const url = qs.stringifyUrl({
         url: `${socketUrl}/${id}`,
-        query: socketQuery
+        query: socketQuery,
       });
 
       await axios.patch(url, values);
+
+      form.reset();
+      setIsEditing(false);
     } catch (error) {
       console.log(error);
     }
