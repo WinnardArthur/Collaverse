@@ -9,6 +9,7 @@ import { useChatQuery } from "@/hooks/use-chat-query";
 import { Loader, Loader2, ServerCrash } from "lucide-react";
 import ChatItem from "./chat-item";
 import { useChatSocket } from "@/hooks/use-chat-socket";
+import { useChatScroll } from "@/hooks/use-chat-scroll";
 
 const DATE_FORMAT = "d MMM yyyy, HH:mm";
 
@@ -57,6 +58,13 @@ export const ChatMessages = ({
     });
 
   useChatSocket({ queryKey, addKey, updateKey });
+  useChatScroll({
+    chatRef,
+    bottomRef,
+    loadMore: fetchNextPage,
+    shouldLoadMore: !isFetchingNextPage && !!hasNextPage,
+    count: data?.pages?.[0]?.items?.length ?? 0,
+  });
 
   if (status === "loading") {
     return (
