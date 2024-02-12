@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useRef, ElementRef } from "react";
 import { Member, Message, Profile } from "@prisma/client";
 import { format } from "date-fns";
 
 import { ChatWelcome } from "./chat-welcome";
 import { useChatQuery } from "@/hooks/use-chat-query";
-import { Loader2, ServerCrash } from "lucide-react";
+import { Loader, Loader2, ServerCrash } from "lucide-react";
 import ChatItem from "./chat-item";
 import { useChatSocket } from "@/hooks/use-chat-socket";
 
@@ -45,6 +45,9 @@ export const ChatMessages = ({
   const addKey = `chat:${chatId}:messages`;
   const updateKey = `chat:${chatId}:messages:update`;
 
+  const chatRef = useRef<ElementRef<"div">>(null);
+  const bottomRef = useRef<ElementRef<"div">>(null);
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useChatQuery({
       queryKey,
@@ -76,11 +79,33 @@ export const ChatMessages = ({
       </div>
     );
   }
-  return (
-    <div className="flex-1 flex flex-col py-4 overflow-y-auto h-full">
-      <div className="flex-1" />
-      <ChatWelcome type={type} name={name} />
 
+  return (
+    <div
+      ref={chatRef}
+      className="flex-1 flex flex-col py-4 overflow-y-auto h-full"
+    >
+      {!hasNextPage && (
+        <>
+          <div className="flex-1" />
+          <ChatWelcome type={type} name={name} />
+        </>
+      )}
+
+      {hasNextPage && (
+        <div className="flex justify-center">
+          {isFetchingNextPage ? (
+            <Loader className="h-6 w-6 animate-spin text-zinc-500 my-4" />
+          ) : (
+            <button
+              onClick={() => fetchNextPage()}
+              className="text-zinc-500 hover:text-zinc-600 dark:text-zinc-400 text-xs my-4 dark:hover:text-zinc-300 transition"
+            >
+              Load previous messages
+            </button>
+          )}
+        </div>
+      )}
       <div className="flex flex-col-reverse mt-auto">
         {data?.pages?.map((group, i) => (
           <React.Fragment key={i}>
@@ -102,6 +127,8 @@ export const ChatMessages = ({
           </React.Fragment>
         ))}
       </div>
+
+      <div ref={bottomRef} />
     </div>
   );
 };
