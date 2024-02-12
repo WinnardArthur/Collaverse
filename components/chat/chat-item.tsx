@@ -120,7 +120,7 @@ const ChatItem = ({
     }
   };
 
-  const isLoading = form.formState.isLoading;
+  const isLoading = form.formState.isSubmitting;
 
   return (
     <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
